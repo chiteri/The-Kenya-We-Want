@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Kenya County</title>
+        <link rel="stylesheet"  href="jquery.mobile-1.0.1.min.css" />
+        <link rel="stylesheet" href="docs/_assets/css/jqm-docs.css" />
+        <script src="jquery.js"></script>
+        <!--script src="experiments/themeswitcher/jquery.mobile.themeswitcher.js"></script-->
+        <!--script src="docs/_assets/js/jqm-docs.js"></script-->
+        <script src="jquery.mobile-1.0.1.min.js"></script>
+
+        <script>
+            $(document).ready(function() {
+                get_counties();
+            });
+            
+            function get_counties() {
+                var fusionUrl = "http://ft2json.appspot.com/q?sql=SELECT%20*%20FROM%201il_y7vtj4tXXnbOGwu6KBxWty-v5FyD_5BZ8b-o%20ORDER%20BY%20Total%20DESC";
+                
+                $.ajax({
+                    url: fusionUrl,
+                    type: 'GET',
+                    dataType: 'json',
+                    async: false,
+                    success: function(data) { 
+                        $('#counties').html("");
+                        for (i=0; i<data.count;i++) {
+                            if (i==0){} else{
+                                var countyId = data.data[i].County.replace(" ", "");
+                                $('#counties').append("<li><a href=\"#"+countyId+"\">" + data.data[i].County + "</a><span class=\"ui-li-count\">"+data.data[i].Total+"</span></li>");
+                                $('body').append("<div data-role=\"page\" class=\"type-home\" id=\"" + countyId + "\"><div data-role=\"header\" data-theme=\"a\" ><a href=\"#frontpage\" class=\"ui-btn-left ui-btn-back\" data-icon=\"arrow-l\">Back</a><h1>" + data.data[i].County +"</h1></div></div>");
+                                $('#' + countyId).page();
+                            }
+                        }
+                        $('#counties').listview('refresh');
+                    },
+                    error: function() { alert('Booh, an error occured');}
+                });
+            }
+            
+            
+        </script>
+    </head> 
+    <body> 
+        <div data-role="page" class="type-home" id="frontpage">
+            <div data-role="header" id="login-header" data-theme="a" >
+                <!--a href="#login" class="ui-btn-left ui-btn-back" data-icon="arrow-l">Login</a-->
+                <h1>Kenya Counties</h1>
+            </div>
+
+            <div data-role="content">
+
+                <div style="text-align: center; margin-top: 10px; margin-bottom: 20px;">
+                    <iframe width="500" height="300" scrolling="no"  
+                            src="https://www.google.com/fusiontables/embedviz?viz=MAP&q=select+col4%3E%3E1+from+2747509+&h=false&lat=-0.015357991412988239&lng=37.89739400000008&z=5&t=1&l=col4%3E%3E1"></iframe>
+                </div>
+
+                <ul id="counties" data-role="listview" data-url="counties" data-theme="f" data-inset="true" data-type="vertical" data-filter="true" data-filter-placeholder="Filter counties" data-filter-theme="b">
+
+                </ul>
+
+            </div>
+
+            <div data-role="footer" class="footer-docs" data-theme="c">
+                <p>&copy; 2012 The Winning Group</p>
+            </div>	
+
+        </div>
+    </body>
+</html>

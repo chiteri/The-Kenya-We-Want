@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Kenya County</title>
+        <link rel="stylesheet"  href="jquery.mobile-1.0.1.min.css" />
+        <link rel="stylesheet" href="docs/_assets/css/jqm-docs.css" />
+        <script src="jquery.js"></script>
+        <!--script src="experiments/themeswitcher/jquery.mobile.themeswitcher.js"></script-->
+        <!--script src="docs/_assets/js/jqm-docs.js"></script-->
+        <script src="jquery.mobile-1.0.1.min.js"></script>
+
+        <script>
+            $(document).ready(function() {
+                //                get_counties();
+                get_health();
+                get_education();
+            });
+            
+            function get_counties() {
+                var fusionUrl = "http://ft2json.appspot.com/q?sql=SELECT%20*%20FROM%201il_y7vtj4tXXnbOGwu6KBxWty-v5FyD_5BZ8b-o%20ORDER%20BY%20Total%20DESC";
+                
+                $.ajax({
+                    url: fusionUrl,
+                    type: 'GET',
+                    dataType: 'json',
+                    async: false,
+                    success: function(data) { 
+                        $('#counties').html("");
+                        for (i=0; i<data.count;i++) {
+                            if (i==0){} else{
+                                var countyId = data.data[i].County.replace(" ", "");
+                                $('#counties').append("<li><a href=\"#"+countyId+"\">" + data.data[i].County + "</a><span class=\"ui-li-count\">"+data.data[i].Total+"</span></li>");
+                                $('body').append("<div data-role=\"page\" class=\"type-home\" id=\"" + countyId + "\"><div data-role=\"header\" data-theme=\"a\" ><a href=\"#frontpage\" class=\"ui-btn-left ui-btn-back\" data-icon=\"arrow-l\">Back</a><h1>" + data.data[i].County +"</h1></div></div>");
+                                $('#' + countyId).page();
+                            }
+                        }
+                        $('#counties').listview('refresh');
+                    },
+                    error: function(err) { alert('Booh, an error occured. ' + err);}
+                });
+            }
+            
+            function get_health() {
+                var datasetId = "1sLHtdS7Zybevh2H5vKBnNGsbFzDQ12u0tOafE5U"
+                var fusionUrl = "http://ft2json.appspot.com/q?sql=SELECT%20*%20FROM%20" + datasetId;
+                
+                $.ajax({
+                    url: fusionUrl,
+                    type: 'GET',
+                    dataType: 'json',
+                    async: false,
+                    success: function(data) { 
+                        for (i=0; i<data.count;i++) {
+                            if (i==0){} else{
+                                $('#healthDataset').append("<tr><td>" + data.data[i].County + "</td><td align=\"right\">"+ data.data[i].MorbidityAll +"%</td></tr>");
+                            }
+                        }
+                    },
+                    error: function() { alert('Booh, an error occured');}
+                });
+            }
+            
+            function get_education() {
+                var datasetId = "1axs6MWFUs5CX5GPtVTOvdoyMYBD8z7kn8Ivuz-0"
+                var fusionUrl = "http://ft2json.appspot.com/q?sql=SELECT%20*%20FROM%20" + datasetId;
+                
+                $.ajax({
+                    url: fusionUrl,
+                    type: 'GET',
+                    dataType: 'json',
+                    async: false,
+                    success: function(data) { 
+                        for (i=0; i<data.count;i++) {
+                            if (i==0){} else{
+                                $('#educationDataset').append("<tr><td>" + data.data[i].county + "</td><td align=\"right\">"+ data.data[i].neverAttended +"</td><td align=\"right\">"+ data.data[i].prePrimary +"</td><td align=\"right\">"+ data.data[i].Primary +"</td><td align=\"right\">"+ data.data[i].University +"</td></tr>");
+                            }
+                        }
+                    },
+                    error: function() { alert('Booh, an error occured');}
+                });
+            }
+            
+            
+        </script>
+    </head> 
+    <body> 
+        <div data-role="page" class="type-home" id="frontpage">
+            <div data-role="header" id="login-header" data-theme="a" >
+                <!--a href="#login" class="ui-btn-left ui-btn-back" data-icon="arrow-l">Login</a-->
+                <h1>Kenya Counties</h1>
+            </div>
+
+            <div data-role="content">
+
+                <div style="text-align: center; margin-top: 10px; margin-bottom: 20px;">
+                    <iframe width="500" height="300" scrolling="no"  
+                            src="https://www.google.com/fusiontables/embedviz?viz=MAP&q=select+col4%3E%3E1+from+2747509+&h=false&lat=-0.015357991412988239&lng=37.89739400000008&z=5&t=1&l=col4%3E%3E1"></iframe>
+                </div>
+
+                <ul id="datasets" data-role="listview" data-url="counties" data-theme="f" data-inset="true" data-type="vertical">
+                    <li><a href="#datasetHealth">Health</a></li>
+                    <li><a href="#datasetEducation">Education</a></li>
+                    <li><a href="#datasetPoverty">Poverty</a></li>
+                </ul>
+
+            </div>
+
+            <div data-role="footer" class="footer-docs" data-theme="c">
+                <p>&copy; 2012 The Winning Group</p>
+            </div>	
+
+        </div>
+
+        <div data-role="page" class="type-home" id="datasetHealth">
+            <div data-role="header" id="login-header" data-theme="a" >
+                <a href="#frontpage" class="ui-btn-left ui-btn-back" data-icon="arrow-l">Back</a>
+                <h1>Health</h1>
+            </div>
+
+            <div data-role="content">
+
+                <div style="text-align: center; margin-top: 10px; margin-bottom: 20px;">
+                    <iframe width="360" height="450" scrolling="no"  src="https://www.google.com/fusiontables/embedviz?viz=MAP&q=select+col10+from+2757223+&h=false&lat=-0.015357991412988239&lng=37.89739400000008&z=6&t=1&l=col10"></iframe>
+                    <table id="healthDataset" style="margin-left: auto; margin-right: auto;">
+                        <tr>
+                            <td><b>County</b></td>
+                            <td><b>Morbidity</b></td>
+                        </tr>
+                    </table>
+                </div>
+
+
+
+            </div>
+
+            <div data-role="footer" class="footer-docs" data-theme="c">
+                <p>&copy; 2012 The Winning Group</p>
+            </div>	
+        </div>
+
+        <div data-role="page" class="type-home" id="datasetEducation">
+            <div data-role="header" id="login-header" data-theme="a" >
+                <a href="#frontpage" class="ui-btn-left ui-btn-back" data-icon="arrow-l">Back</a>
+                <h1>Education</h1>
+            </div>
+
+            <div data-role="content">
+
+                <div style="text-align: center; margin-top: 10px; margin-bottom: 20px;">
+                    <iframe width="360" height="450" scrolling="no"  src="https://www.google.com/fusiontables/embedviz?viz=MAP&q=select+col4%3E%3E0+from+2757257+&h=false&lat=-0.015357991412988239&lng=37.89739400000008&z=6&t=1&l=col4%3E%3E0"></iframe>
+                    <table id="educationDataset" style="margin-left: auto; margin-right: auto;" border="1">
+                        <tr>
+                            <td><b>County</b></td>
+                            <td><b>Never Attended School</b></td>
+                            <td><b>Pre-Primary Schools</b></td>
+                            <td><b>Primary Schools</b></td>
+                            <td><b>Universities</b></td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+
+            <div data-role="footer" class="footer-docs" data-theme="c">
+                <p>&copy; 2012 The Winning Group</p>
+            </div>	
+        </div>
+
+        </div>
+    </body>
+</html>
